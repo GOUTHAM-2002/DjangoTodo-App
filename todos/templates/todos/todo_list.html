@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todos Display</title>
+</head>
+<body>
+<form method="post" style="margin-bottom: 20px;">
+    {% csrf_token %}
+    <h2>Create new category</h2>
+    {{ category_form.as_p }}
+    <button type="submit" name="submit_category">Add Category</button>
+</form>
+<form method="post">
+    {% csrf_token %}
+    {{ todo_form.as_p }}
+    <button type="submit" name="submit_todo">Add Todo</button>
+</form>
+{% for cat in categories %}
+<form method="post" style="display: inline;">
+    {% csrf_token %}
+    <input type="hidden" name="cat_id" value="{{ cat.id }}">
+    <h2>{{ cat.title }} <button type="submit">del</button> </h2>
+</form>
+<ul>
+    {% for todo in cat.todos_set.all %}
+    {% if not todo.completed %}
+    <form method="post" style="display: inline;">
+        {% csrf_token %}
+        <input type="hidden" name="todo_id" value="{{ todo.id }}">
+        <li>{{ todo.title }} <input type="checkbox" name="completed" onchange="this.form.submit()" {% if todo.completed %} checked {% endif %} ></li>
+    </form>
+    <br>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endfor %}
+<h1>Completed</h1>
+{% for todo in todos %}
+{% if todo.completed %}
+{{ todo.title }}<br>
+{% endif %}
+{% endfor %}
+<form id="delete" method="post">
+    {% csrf_token %}
+    <button type="submit" name="delete">Clear All</button>
+</form>
+</body>
+</html>
