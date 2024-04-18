@@ -3,47 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Todos Display</title>
+    <style>
+        /* Hide error messages */
+        .errorlist {
+            display: none;
+        }
+
+        /* Apply linear gradient background to the body */
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+        }
+
+        /* Add margin to cards */
+        .card {
+            margin: 10px;
+        }
+
+        /* Center the form at the bottom of the page */
+        .bottom-center {
+            text-align: center;
+            margin: 30px auto; /* Auto margin horizontally */
+            width: 80%; /* Set the width of the form */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Add margin to the "Add Todo" button */
+        .add-todo-btn {
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
-<form method="post" style="margin-bottom: 20px;">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Left side div block -->
+            <div style="margin-bottom: 20px;">
+                <form method="post">
+                    {% csrf_token %}
+                    <h2>Create new category</h2>
+                    {{ category_form.as_p }}
+                    <button type="submit" name="submit_category" class="btn btn-primary">Add Category</button>
+                </form>
+            </div>
+            <div>
+                <h1>Completed Tasks</h1>
+                {% for todo in todos %}
+                    {% if todo.completed %}
+                        <s>{{ todo.title }}<br></s>
+                    {% endif %}
+                {% endfor %}
+                <form id="delete" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="delete" class="btn btn-danger">Clear All</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="container">
+                <div class="row">
+                    {% for cat in categories %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="cat_id" value="{{ cat.id }}">
+                                        <h2>{{ cat.title }} <button type="submit" class="btn btn-danger">del</button> </h2>
+                                    </form>
+                                    <ul>
+                                        {% for todo in cat.todos_set.all %}
+                                            {% if not todo.completed %}
+                                                <form method="post" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="todo_id" value="{{ todo.id }}">
+                                                    <li>{{ todo.title }} <input type="checkbox" name="completed" onchange="this.form.submit()" {% if todo.completed %} checked {% endif %} ></li>
+                                                </form>
+                                                <br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="bottom-center">
     {% csrf_token %}
-    <h2>Create new category</h2>
-    {{ category_form.as_p }}
-    <button type="submit" name="submit_category">Add Category</button>
+    <div class="form-group">
+        {{ todo_form.title.label_tag }}
+        {{ todo_form.title }}
+    </div>
+    <div class="form-group">
+        {{ todo_form.category.label_tag }}
+        {{ todo_form.category }}
+    </div>
+    <div class="add-todo-btn">
+        <button type="submit" name="submit_todo" class="btn btn-success">Add Todo</button>
+    </div>
 </form>
-<form method="post">
-    {% csrf_token %}
-    {{ todo_form.as_p }}
-    <button type="submit" name="submit_todo">Add Todo</button>
-</form>
-{% for cat in categories %}
-<form method="post" style="display: inline;">
-    {% csrf_token %}
-    <input type="hidden" name="cat_id" value="{{ cat.id }}">
-    <h2>{{ cat.title }} <button type="submit">del</button> </h2>
-</form>
-<ul>
-    {% for todo in cat.todos_set.all %}
-    {% if not todo.completed %}
-    <form method="post" style="display: inline;">
-        {% csrf_token %}
-        <input type="hidden" name="todo_id" value="{{ todo.id }}">
-        <li>{{ todo.title }} <input type="checkbox" name="completed" onchange="this.form.submit()" {% if todo.completed %} checked {% endif %} ></li>
-    </form>
-    <br>
-        {% endif %}
-    {% endfor %}
-</ul>
-{% endfor %}
-<h1>Completed</h1>
-{% for todo in todos %}
-{% if todo.completed %}
-{{ todo.title }}<br>
-{% endif %}
-{% endfor %}
-<form id="delete" method="post">
-    {% csrf_token %}
-    <button type="submit" name="delete">Clear All</button>
-</form>
+
 </body>
 </html>
