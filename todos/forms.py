@@ -8,7 +8,7 @@ class TodoForm(forms.ModelForm):
         widgets = {
 
             'title': forms.TextInput(attrs={'placeholder': 'Enter your task', 'style': 'margin-bottom:20px;width: 50%; border: 1px solid #ccc; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'}),
-            'category': forms.Select(attrs={ 'style': 'margin-bottom:20px;width: 50%; border: 1px solid #ccc; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);', 'placeholder':'Select a category'})
+            'category': forms.Select(attrs={ 'style': 'margin-bottom:20px;width: 50%; border: 1px solid #ccc; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);',})
         }
 
 

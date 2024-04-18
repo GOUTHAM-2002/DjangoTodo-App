@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Todos Display</title>
     <style>
+    #small{
+    color:grey;
+    }
         /* Hide error messages */
         .errorlist {
             display: none;
@@ -13,7 +16,7 @@
         body, html {
             height: 100%;
             margin: 0;
-            background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+            background: linear-gradient(to bottom,#f8f9fa, #ADD8E6);
         }
 
         /* Add margin to cards */
@@ -40,6 +43,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
+<h1 style="text-align:center;">Todo App</h1><hr>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-3">
@@ -67,15 +71,15 @@
         </div>
         <div class="col-md-9">
             <div class="container">
-                <div class="row">
+                <div class="row" >
                     {% for cat in categories %}
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body">
+                        <div class="col-md-4 mb-3" >
+                            <div class="card" >
+                                <div class="card-body" style="background-color:{{cat.color}};">
                                     <form method="post" style="display: inline;">
                                         {% csrf_token %}
                                         <input type="hidden" name="cat_id" value="{{ cat.id }}">
-                                        <h2>{{ cat.title }} <button type="submit" class="btn btn-danger">del</button> </h2>
+                                        <h2>{{ cat.title }} <button type="submit" id="small" class="btn btn-sm">delete</button> </h2>
                                     </form>
                                     <ul>
                                         {% for todo in cat.todos_set.all %}
